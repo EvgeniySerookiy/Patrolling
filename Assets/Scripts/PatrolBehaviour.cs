@@ -11,6 +11,10 @@ public class PatrolBehaviour : MonoBehaviour
     [SerializeField] private GameObject _spherePrefab;
     [SerializeField] private int _count;
     [SerializeField] private float _movementSpeed;
+    [SerializeField] private float _pauseTimePosition;
+    
+    private float _pauseTime;
+    
     private Transform[] _sphereArray;
     
     private int _currentIndex = 1;
@@ -30,15 +34,23 @@ public class PatrolBehaviour : MonoBehaviour
                 transform.position = randomPosition;
             }
         }
-        
     }
 
     private void Update()
     {
+        if (_pauseTime > 0f)
+        {
+            _pauseTime -= Time.deltaTime;
+            return;
+        }
+        
         var travelDistance = _movementSpeed * Time.deltaTime;
         
+        transform.LookAt(_sphereArray[_currentIndex].position);
         if (Vector3.Distance(transform.position, _sphereArray[_currentIndex].position) <= travelDistance)
         {
+            _pauseTime = _pauseTimePosition;
+            
             if (_currentIndex == _count - 1)
             {
                 _currentIndex = 0;
